@@ -5,10 +5,15 @@
       <div>{{questionInfo.options.question}}</div>
       <input [formControlName]="'text'+i" type="text" *ngIf="questionInfo.options.type?.includes('Paragraph')">
       <ng-container  *ngIf="questionInfo.options.type?.includes('Checkbox List')">
-         <mat-checkbox *ngFor="let info of questionInfo.options.aliases; let i = index"
-           [formControlName]="getCheckboxName(i, questionInfo)"
-                       >{{info}}</mat-checkbox>
-         <mat-checkbox *ngIf="questionInfo.options.ownAnswer" [checked]="isChecked">Other</mat-checkbox>
+        <div [formGroupName]="'checkboxes'">
+        <ng-container *ngFor="let info of questionInfo.options.aliases; let index = index" >
+          <mat-checkbox
+            [formControlName]="getCheckboxName(index, questionInfo)"
+          >{{info}}</mat-checkbox>
+        </ng-container>
+        </div>
+         <mat-checkbox *ngIf="questionInfo.options.ownAnswer" [checked]="isChecked"
+         (change)="isChecked = !isChecked">Other</mat-checkbox>
          <input *ngIf="isChecked" formControlName="answer6">
       </ng-container>
     </div>
