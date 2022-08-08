@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {questionTypeValidator} from "../question-type.directive";
 
@@ -9,12 +9,9 @@ import {questionTypeValidator} from "../question-type.directive";
   styleUrls: ['./add-question-modal.component.scss']
 })
 export class AddQuestionModalComponent implements OnInit {
-  public addQuestionForm: FormGroup = this.formBuilder.group({
+  public addQuestionForm: UntypedFormGroup = this.formBuilder.group({
     type: ['', [Validators.required, questionTypeValidator(/\b(Paragraph|Checkbox list)\b/)]],
     question: ['', Validators.required],
-    password: ['', Validators.required],
-    firstOption: ['', Validators.required],
-    secondOption: ['', Validators.required],
     ownAnswer: [false, Validators.required],
     isRequired: [false, Validators.required],
     aliases: this.formBuilder.array([
@@ -25,16 +22,18 @@ export class AddQuestionModalComponent implements OnInit {
   public isOwnAnswer = false;
   public isRequired = false;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
               public dialogRef: MatDialogRef<AddQuestionModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: {},
               public dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.addAlias();
+    // this.addAlias();
   }
 
   get aliases() {
-    return this.addQuestionForm.get('aliases') as FormArray;
+    return this.addQuestionForm.get('aliases') as UntypedFormArray;
   }
 
   addAlias() {

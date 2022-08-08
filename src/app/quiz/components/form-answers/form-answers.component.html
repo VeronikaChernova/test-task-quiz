@@ -1,1 +1,6 @@
-<p>form-answers works!</p>
+<div *ngFor="let answer of this.answers; let i = index">
+  <div>{{answer.question}}</div>
+  <div>{{answer.answer}}</div>
+</div>
+<button (click)="onBack()">Back to Form Builder</button>
+

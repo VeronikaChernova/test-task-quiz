@@ -1,26 +1,26 @@
-<div>
-  <div> class="title">Add a new question</div>
-  <form  [formGroup]="addQuestionForm" (ngSubmit)="onAddNewQuestion()">
+<div class="container">
+  <div class="title">Add a new question</div>
+  <form  [formGroup]="addQuestionForm"  class="container">
     <input  formControlName="type"
              maxlength="60"
              placeholder="Checkbox List V">
+    <div *ngIf="addQuestionForm.controls['type'].invalid && (addQuestionForm.controls['type'].dirty || addQuestionForm.controls['type'].touched)" class="req-msg">
+      <div *ngIf="addQuestionForm.controls['type'].errors">
+        Should be "Paragraph" or "Checkbox list"
+      </div>
+    </div>
     <input   formControlName="question"
              maxlength="100"
              placeholder="Type question here">
-    <input formControlName="firstOption"
-           placeholder="Add Answer Option">
-    <input>
-    <input formControlName="secondOption"
-           placeholder="Add Answer Option">
-    <input>
-    <div formArrayName="aliases">
-      <div *ngFor="let alias of aliases.controls; let i=index">
-        <input id="alias-{{ i }}" type="text" [formControlName]="i">
-      </div>
-    </div>
-    <a  (click)="addAlias()">+ Add another answer</a>
-    <mat-checkbox >Allow user to specify their own answer</mat-checkbox>
-    <mat-checkbox >This field is required</mat-checkbox>
+    <ng-container formArrayName="aliases">
+      <ng-container *ngFor="let alias of aliases.controls; let i=index">
+        <input id="alias-{{ i }}" type="text" placeholder="Add Answer Option" [formControlName]="i">
+      </ng-container>
+    </ng-container>
+    <a  (click)="addAlias()" class="highlighted">+ Add another answer</a>
+    <mat-checkbox formControlName="ownAnswer" class="highlighted">Allow user to specify their own answer</mat-checkbox>
+    <mat-checkbox formControlName="isRequired" class="highlighted">This field is required</mat-checkbox>
+    <button mat-button (click)="onAddNewQuestion()">Submit</button>
   </form>
 
 </div>

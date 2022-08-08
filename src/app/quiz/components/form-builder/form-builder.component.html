@@ -1,1 +1,25 @@
-<p>form-builder works!</p>
+<form [formGroup]="pvqForm">
+  <div [formArrayName]="'questions'">
+  <div *ngFor="let questionInfo of questions; let i = index" class="column">
+  <div [formGroupName]="i" class="column">
+  <div>{{questionInfo.question}}</div>
+  <input [formControlName]="'answer'+i" type="text" *ngIf="questionInfo.type === 'Paragraph'">
+  <ng-container  *ngIf="questionInfo.type !== 'Paragraph'">
+    <mat-checkbox [formControlName]="'answer'+i" *ngFor="let info of questionInfo.aliases; let i = index">{{info}}</mat-checkbox>
+    <mat-checkbox *ngIf="questionInfo.ownAnswer" [checked]="isChecked">Other</mat-checkbox>
+    <input *ngIf="isChecked" formControlName="answer6">
+  </ng-container>
+
+
+  </div>
+</div>
+  </div>
+</form>
+
+<ng-container *ngIf="questions.length">
+  <button (click)="onAddQuestion()"> Add new question</button>
+  <button (click)="onReviewAnswers(pvqForm)">Review my answers</button>
+</ng-container>
+
+<button *ngIf="!questions.length"
+  (click)="onAddQuestion()" style="margin-top: 40%; margin-left: 50%">Add Question</button>

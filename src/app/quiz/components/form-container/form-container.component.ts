@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {AddQuestionModalComponent} from "../add-question-modal/add-question-modal.component";
 
 @Component({
   selector: 'app-form-container',
@@ -8,19 +6,11 @@ import {AddQuestionModalComponent} from "../add-question-modal/add-question-moda
   styleUrls: ['./form-container.component.scss']
 })
 export class FormContainerComponent implements OnInit {
-  private dialogRef: any = null;
 
-  constructor( public dialog: MatDialog) { }
+  constructor( ) { }
 
   ngOnInit(): void {
   }
 
-  onAddQuestion() {
-    this.dialog.open(AddQuestionModalComponent, {});
-    this.dialogRef.afterClosed().subscribe((options: any) => {
-      if (options) {
 
-      }
-    });
-  }
 }

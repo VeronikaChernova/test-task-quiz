@@ -8,29 +8,28 @@ import { AddQuestionModalComponent } from './components/add-question-modal/add-q
 import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
-  declarations: [
-    FormContainerComponent,
-    FormBuilderComponent,
-    FormAnswersComponent,
-    AddQuestionModalComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatDialogModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatCheckboxModule
-  ],
-  exports: [
-    FormContainerComponent,
-    FormBuilderComponent,
-    FormAnswersComponent
-  ],
-  entryComponents: [
-    AddQuestionModalComponent
-  ]
+    declarations: [
+        FormContainerComponent,
+        FormBuilderComponent,
+        FormAnswersComponent,
+        AddQuestionModalComponent,
+    ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatDialogModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCheckboxModule,
+        MatButtonModule
+    ],
+    exports: [
+        FormContainerComponent,
+        FormBuilderComponent,
+        FormAnswersComponent
+    ]
 })
 export class QuizModule { }
