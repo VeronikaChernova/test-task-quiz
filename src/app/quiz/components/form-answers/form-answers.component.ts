@@ -17,8 +17,11 @@ export class FormAnswersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.dataService.quizAnswersObs.subscribe(answers => {
-      debugger
-      this.answers = answers;
+      if (!answers) {
+        return;
+      }
+
+      this.answers = answers.map((item: any) => Object.entries(item));
     }));
   }
 
@@ -27,8 +30,11 @@ export class FormAnswersComponent implements OnInit, OnDestroy {
   }
 
   onBack() {
-
     this.router.navigate(['form/builder']);
   }
 
+
+  isNotBoolean(value: any): boolean {
+     return typeof value !== 'boolean';
+  }
 }

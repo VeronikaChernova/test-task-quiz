@@ -4,17 +4,17 @@ import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {DataService} from "../../services/data.service";
-import {Subscription} from "rxjs";
+import {ObjectUnsubscribedError, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent implements OnInit, OnDestroy {
   private dialogRef: any;
   public questions: {options: any, questions: any[]}[] = [];
-  pvqForm: FormGroup = this.formBuilder.group({
+  quizForm: FormGroup = this.formBuilder.group({
     text0: [''],
     checkbox1: false,
     checkbox2: false,
@@ -29,6 +29,9 @@ export class FormBuilderComponent implements OnInit {
     checkbox3: false,
     checkbox4: false,
     checkbox5: false
+  });
+  optionalForm: FormGroup = this.formBuilder.group({
+    answer: false,
   });
   questionGroups: FormArray = this.formBuilder.array([
     this.formBuilder.control('', [Validators.required])
@@ -48,28 +51,31 @@ export class FormBuilderComponent implements OnInit {
   ngOnInit(): void {
     this.questionGroups =
       this.formBuilder.array(this.getQuestions([]).map(question => this.formBuilder.group(question)));
-    this.pvqForm = this.formBuilder.group({
+    this.quizForm = this.formBuilder.group({
       questions: this.questionGroups
     });
 
-    console.log(this.pvqForm);
+    // console.log(this.quizForm);
     this.subscriptions.add(this.dataService.quizQuestionsObs.subscribe(questions => {
       if (!this.questions && questions) {
         this.questions = questions
       }
       if (questions) {
-        this.pvqForm.reset();
+        this.quizForm.reset();
         this.questionGroups =
           this.formBuilder.array(this.getQuestions(questions).map(question => this.formBuilder.group(question)));
 
-        this.pvqForm = this.formBuilder.group({
+        this.quizForm = this.formBuilder.group({
           questions: this.questionGroups
         });
-        // this.cd.markForCheck();
       }
     }));
   }
 
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   getQuestions(questionsInfo: any[]) {
     const questionControlArray: any[] = [];
@@ -79,11 +85,31 @@ export class FormBuilderComponent implements OnInit {
         const name = questionsObj.options.type.includes('Paragraph') && i === 0 ? `text${i}` : `checkbox${i}`;
         const value = questionsObj.options.type.includes('Paragraph') && i === 0 ? '' : false;
         if (name.includes('text')) {
-          questionControlArray.push({[name]: [value, questionsObj.options.isRequired ? Validators.required : null], checkboxes: this.checkboxesForm});
+          questionControlArray.push({[name]: [value, questionsObj.options.isRequired ? Validators.required : null],
+            checkboxes: this.checkboxesForm, optional: this.optionalForm});
         }
       });
-     });
+    });
     console.log({questionControlArray});
+    return questionControlArray;
+  }
+
+  getAnswers(questionsInfo: any[]) {
+    let questionControlArray: any[] = [];
+    questionsInfo.forEach((questionsObj: any, j: number) => {
+      questionsObj.questions.forEach((question: any, i: number) => {
+        const name = questionsObj.questions[i];
+        const value = questionsObj.options.type.includes('Paragraph') && i === 0 ? this.quizForm.value.questions[j].text0 :
+          this.quizForm.value.questions[j].checkboxes[`checkbox${i}`];
+          questionControlArray.push({[name]: value});
+      });
+      if (questionsObj.options.ownAnswer) {
+        questionControlArray.push({ownAnswer: this.quizForm.value.questions[j].optional.answer});
+      }
+     });
+
+    console.log({questionControlArray});
+    questionControlArray = questionControlArray.filter(elem => !!Object.keys(elem).map(k => elem[k])[0]);
     return questionControlArray;
   }
 
@@ -91,26 +117,23 @@ export class FormBuilderComponent implements OnInit {
     this.dialogRef = this.dialog.open(AddQuestionModalComponent, {});
     this.dialogRef.afterClosed().subscribe((options: any) => {
       if (options) {
-        debugger
         const questions = [options.question, ...options.aliases];
         this.questions.push({options, questions});
-        console.log('INFO',this.questions);
+        // console.log('INFO',this.questions);
         this.dataService.changeQuestions(this.questions);
-        console.log({options});
+        // console.log({options});
       }
     });
   }
 
 
   onReviewAnswers(form: any) {
-    debugger
-    console.log(form.value);
-    const result = this.questions.map((question, i) => {
-      return {question, answer: Object.values(this.questionGroups.value[i])[0]}
-    });
+    // console.log(form.value);
+    // console.log(this.getAnswers(this.questions));
+    const result = this.getAnswers(this.questions);
     this.dataService.changeAnswers(result);
 
-    // this.router.navigate(['form/answers']);
+    this.router.navigate(['form/answers']);
   }
 
   getCheckboxName(i: number, questionInfo: any): string {

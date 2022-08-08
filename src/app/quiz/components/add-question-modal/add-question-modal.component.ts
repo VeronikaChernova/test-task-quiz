@@ -42,7 +42,7 @@ export class AddQuestionModalComponent implements OnInit {
     if (this.addQuestionForm.invalid) {
       return;
     }
-    console.log(this.addQuestionForm.value);
+    // console.log(this.addQuestionForm.value);
     this.dialogRef.close(this.addQuestionForm.value);
 
   }

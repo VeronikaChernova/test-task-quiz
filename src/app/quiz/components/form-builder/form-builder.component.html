@@ -1,20 +1,22 @@
-<form [formGroup]="pvqForm">
+<form [formGroup]="quizForm">
   <div [formArrayName]="'questions'">
     <div *ngFor="let questionInfo of questions; let i = index" class="column">
       <div [formGroupName]="i" class="column">
       <div>{{questionInfo.options.question}}</div>
       <input [formControlName]="'text'+i" type="text" *ngIf="questionInfo.options.type?.includes('Paragraph')">
       <ng-container  *ngIf="questionInfo.options.type?.includes('Checkbox List')">
-        <div [formGroupName]="'checkboxes'">
+        <div [formGroupName]="'checkboxes'" class="column">
         <ng-container *ngFor="let info of questionInfo.options.aliases; let index = index" >
           <mat-checkbox
             [formControlName]="getCheckboxName(index, questionInfo)"
           >{{info}}</mat-checkbox>
         </ng-container>
         </div>
+        <div [formGroupName]="'optional'">
          <mat-checkbox *ngIf="questionInfo.options.ownAnswer" [checked]="isChecked"
          (change)="isChecked = !isChecked">Other</mat-checkbox>
-         <input *ngIf="isChecked" formControlName="answer6">
+         <input *ngIf="isChecked" formControlName="answer">
+        </div>
       </ng-container>
     </div>
    </div>
@@ -23,8 +25,8 @@
 
 <ng-container *ngIf="questions.length">
   <button (click)="onAddQuestion()"> Add new question</button>
-  <button (click)="onReviewAnswers(pvqForm)">Review my answers</button>
+  <button (click)="onReviewAnswers(quizForm)">Review my answers</button>
 </ng-container>
 
 <button *ngIf="!questions.length"
-  (click)="onAddQuestion()" style="margin-top: 40%; margin-left: 50%">Add Question</button>
+  (click)="onAddQuestion()" style="margin-top: 20%; margin-left: 40%">Add Question</button>
