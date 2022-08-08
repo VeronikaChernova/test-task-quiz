@@ -1,18 +1,18 @@
 <form [formGroup]="pvqForm">
   <div [formArrayName]="'questions'">
-  <div *ngFor="let questionInfo of questions; let i = index" class="column">
-  <div [formGroupName]="i" class="column">
-  <div>{{questionInfo.question}}</div>
-  <input [formControlName]="'answer'+i" type="text" *ngIf="questionInfo.type === 'Paragraph'">
-  <ng-container  *ngIf="questionInfo.type !== 'Paragraph'">
-    <mat-checkbox [formControlName]="'answer'+i" *ngFor="let info of questionInfo.aliases; let i = index">{{info}}</mat-checkbox>
-    <mat-checkbox *ngIf="questionInfo.ownAnswer" [checked]="isChecked">Other</mat-checkbox>
-    <input *ngIf="isChecked" formControlName="answer6">
-  </ng-container>
-
-
-  </div>
-</div>
+    <div *ngFor="let questionInfo of questions; let i = index" class="column">
+      <div [formGroupName]="i" class="column">
+      <div>{{questionInfo.options.question}}</div>
+      <input [formControlName]="'text'+i" type="text" *ngIf="questionInfo.options.type?.includes('Paragraph')">
+      <ng-container  *ngIf="questionInfo.options.type?.includes('Checkbox List')">
+         <mat-checkbox *ngFor="let info of questionInfo.options.aliases; let i = index"
+           [formControlName]="getCheckboxName(i, questionInfo)"
+                       >{{info}}</mat-checkbox>
+         <mat-checkbox *ngIf="questionInfo.options.ownAnswer" [checked]="isChecked">Other</mat-checkbox>
+         <input *ngIf="isChecked" formControlName="answer6">
+      </ng-container>
+    </div>
+   </div>
   </div>
 </form>
 

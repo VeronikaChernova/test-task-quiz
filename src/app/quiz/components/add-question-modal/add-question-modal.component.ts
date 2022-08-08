@@ -10,7 +10,7 @@ import {questionTypeValidator} from "../question-type.directive";
 })
 export class AddQuestionModalComponent implements OnInit {
   public addQuestionForm: UntypedFormGroup = this.formBuilder.group({
-    type: ['', [Validators.required, questionTypeValidator(/\b(Paragraph|Checkbox list)\b/)]],
+    type: ['', [Validators.required, questionTypeValidator(/\b(Paragraph|Checkbox List| Paragraph Checkbox List)\b/)]],
     question: ['', Validators.required],
     ownAnswer: [false, Validators.required],
     isRequired: [false, Validators.required],
@@ -28,8 +28,6 @@ export class AddQuestionModalComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.addAlias();
-    // this.addAlias();
   }
 
   get aliases() {
@@ -44,9 +42,14 @@ export class AddQuestionModalComponent implements OnInit {
     if (this.addQuestionForm.invalid) {
       return;
     }
-
     console.log(this.addQuestionForm.value);
     this.dialogRef.close(this.addQuestionForm.value);
 
+  }
+
+  onChangeType() {
+   if ( this.addQuestionForm.value.type.includes('Checkbox List')) {
+     this.addAlias();
+   }
   }
 }

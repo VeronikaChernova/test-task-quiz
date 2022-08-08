@@ -3,7 +3,6 @@ import {AddQuestionModalComponent} from "../add-question-modal/add-question-moda
 import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormArray, FormGroup, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
-import {questionTypeValidator} from "../question-type.directive";
 import {DataService} from "../../services/data.service";
 import {Subscription} from "rxjs";
 
@@ -14,7 +13,7 @@ import {Subscription} from "rxjs";
 })
 export class FormBuilderComponent implements OnInit {
   private dialogRef: any;
-  public questions: any[] = [];
+  public questions: {options: any, questions: any[]}[] = [];
   pvqForm: FormGroup = this.formBuilder.group({
     answer0: [''],
     aliases: this.formBuilder.array([
@@ -50,6 +49,7 @@ export class FormBuilderComponent implements OnInit {
         this.pvqForm = this.formBuilder.group({
           questions: this.questionGroups
         });
+        this.cd.markForCheck();
       }
     }));
   }
@@ -57,8 +57,13 @@ export class FormBuilderComponent implements OnInit {
 
   getQuestions(questionsInfo: any[]) {
     const questionControlArray: any[] = [];
-    questionsInfo.forEach((question: any, i: number) => {
-      questionControlArray.push({ [`answer${i}`]: ['', Validators.required]});
+    questionsInfo.forEach((questionsObj: any) => {
+      questionsObj.questions.forEach((question: any, i: number) => {
+
+        const name = questionsObj.options.type.includes('Paragraph') && i === 0 ? `text${i}` : `checkbox${i}`;
+        const value = questionsObj.options.type.includes('Paragraph') && i === 0 ? '' : false;
+        questionControlArray.push({ [name]: [value,  questionsObj.options.isRequired ? Validators.required : null]});
+      });
      });
     console.log({questionControlArray});
     return questionControlArray;
@@ -68,7 +73,9 @@ export class FormBuilderComponent implements OnInit {
     this.dialogRef = this.dialog.open(AddQuestionModalComponent, {});
     this.dialogRef.afterClosed().subscribe((options: any) => {
       if (options) {
-        this.questions.push(options);
+        debugger
+        const questions = [options.question, ...options.aliases];
+        this.questions.push({options, questions});
         console.log('INFO',this.questions);
         this.dataService.changeQuestions(this.questions);
         console.log({options});
@@ -85,8 +92,10 @@ export class FormBuilderComponent implements OnInit {
     });
     this.dataService.changeAnswers(result);
 
-    setTimeout(() => {
-      this.router.navigate(['form/answers']);
-    });
+    this.router.navigate(['form/answers']);
+  }
+
+  getCheckboxName(i: number, questionInfo: any): string {
+    return `checkbox${(i + questionInfo.options.type?.includes('Paragraph') ? 1 : 0)}`;
   }
 }

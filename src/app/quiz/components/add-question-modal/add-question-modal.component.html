@@ -3,10 +3,11 @@
   <form  [formGroup]="addQuestionForm"  class="container">
     <input  formControlName="type"
              maxlength="60"
-             placeholder="Checkbox List V">
+             (input)="onChangeType()"
+             placeholder="Checkbox List">
     <div *ngIf="addQuestionForm.controls['type'].invalid && (addQuestionForm.controls['type'].dirty || addQuestionForm.controls['type'].touched)" class="req-msg">
       <div *ngIf="addQuestionForm.controls['type'].errors">
-        Should be "Paragraph" or "Checkbox list"
+        Should be "Paragraph" or "Checkbox List"
       </div>
     </div>
     <input   formControlName="question"
