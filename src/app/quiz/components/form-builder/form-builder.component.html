@@ -2,8 +2,8 @@
   <div [formArrayName]="'questions'">
     <div *ngFor="let questionInfo of questions; let i = index" class="column">
       <div [formGroupName]="i" class="column">
-      <div>{{questionInfo.options.question}}</div>
-      <input [formControlName]="'text'+i" type="text" *ngIf="questionInfo.options.type?.includes('Paragraph')">
+      <div style="font-weight: 500;">{{questionInfo.options.question}}</div>
+      <input [formControlName]="'text0'" type="text" *ngIf="questionInfo.options.type?.includes('Paragraph')">
       <ng-container  *ngIf="questionInfo.options.type?.includes('Checkbox List')">
         <div [formGroupName]="'checkboxes'" class="column">
         <ng-container *ngFor="let info of questionInfo.options.aliases; let index = index" >
@@ -23,10 +23,14 @@
   </div>
 </form>
 
-<ng-container *ngIf="questions.length">
-  <button (click)="onAddQuestion()"> Add new question</button>
-  <button (click)="onReviewAnswers(quizForm)">Review my answers</button>
-</ng-container>
+<div *ngIf="questions.length" class="bottom-btns">
+  <div>
+    <button (click)="onAddQuestion()">Add new question</button>
+  </div>
+  <div>
+    <button (click)="onReviewAnswers(quizForm)" mat-raised-button color="accent">Review my answers</button>
+  </div>
+</div>
 
 <button *ngIf="!questions.length"
-  (click)="onAddQuestion()" style="margin-top: 20%; margin-left: 40%">Add Question</button>
+  (click)="onAddQuestion()" class="btn-add">Add Question</button>

@@ -15,13 +15,14 @@
              placeholder="Type question here">
     <ng-container formArrayName="aliases">
       <ng-container *ngFor="let alias of aliases.controls; let i=index">
-        <input id="alias-{{ i }}" type="text" placeholder="Add Answer Option" [formControlName]="i">
+        <input  *ngIf="this.addQuestionForm.value.type.includes('Checkbox List')" id="alias-{{ i }}" type="text" placeholder="Add Answer Option" [formControlName]="i">
       </ng-container>
     </ng-container>
     <a  (click)="addAlias()" class="highlighted">+ Add another answer</a>
     <mat-checkbox formControlName="ownAnswer" class="highlighted">Allow user to specify their own answer</mat-checkbox>
     <mat-checkbox formControlName="isRequired" class="highlighted">This field is required</mat-checkbox>
-    <button mat-button (click)="onAddNewQuestion()">Submit</button>
+    <button mat-raised-button (click)="onAddNewQuestion()" [disabled]="addQuestionForm.invalid"
+            style="margin-top: 10px">Submit</button>
   </form>
 
 </div>

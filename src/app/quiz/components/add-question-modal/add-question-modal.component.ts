@@ -14,9 +14,7 @@ export class AddQuestionModalComponent implements OnInit {
     question: ['', Validators.required],
     ownAnswer: [false, Validators.required],
     isRequired: [false, Validators.required],
-    aliases: this.formBuilder.array([
-      this.formBuilder.control('', [Validators.required])
-    ])
+    aliases: this.formBuilder.array([])
   });
 
   public isOwnAnswer = false;
@@ -42,7 +40,6 @@ export class AddQuestionModalComponent implements OnInit {
     if (this.addQuestionForm.invalid) {
       return;
     }
-    // console.log(this.addQuestionForm.value);
     this.dialogRef.close(this.addQuestionForm.value);
 
   }

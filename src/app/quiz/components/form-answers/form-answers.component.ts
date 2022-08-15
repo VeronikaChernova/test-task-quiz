@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class FormAnswersComponent implements OnInit, OnDestroy {
    private subscriptions = new Subscription();
-   answers:  any = [];
+   answers: any[] = [];
   constructor( private dataService: DataService,
                private activatedRoute: ActivatedRoute,
                private router: Router) { }
@@ -20,7 +20,7 @@ export class FormAnswersComponent implements OnInit, OnDestroy {
       if (!answers) {
         return;
       }
-
+      console.log(answers);
       this.answers = answers.map((item: any) => Object.entries(item));
     }));
   }
@@ -36,5 +36,9 @@ export class FormAnswersComponent implements OnInit, OnDestroy {
 
   isNotBoolean(value: any): boolean {
      return typeof value !== 'boolean';
+  }
+
+  isAnswersNotExist(): boolean {
+    return !this.answers.length;
   }
 }

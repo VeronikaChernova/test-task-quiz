@@ -80,17 +80,20 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   getQuestions(questionsInfo: any[]) {
     const questionControlArray: any[] = [];
     questionsInfo.forEach((questionsObj: any) => {
-      questionsObj.questions.forEach((question: any, i: number) => {
+      const hasText = questionsObj.options.type.includes('Paragraph');
+      const hasCheckboxesList = questionsObj.options.type.includes('Checkbox List');
 
-        const name = questionsObj.options.type.includes('Paragraph') && i === 0 ? `text${i}` : `checkbox${i}`;
-        const value = questionsObj.options.type.includes('Paragraph') && i === 0 ? '' : false;
-        if (name.includes('text')) {
-          questionControlArray.push({[name]: [value, questionsObj.options.isRequired ? Validators.required : null],
-            checkboxes: this.checkboxesForm, optional: this.optionalForm});
-        }
-      });
+      if (hasText && !hasCheckboxesList) {
+        questionControlArray.push({[`text0`]: ['', questionsObj.options.isRequired ? Validators.required : null],
+          optional: this.optionalForm});
+      } else if (hasCheckboxesList && hasText){
+        questionControlArray.push({
+          [`text0`]: ['', questionsObj.options.isRequired ? Validators.required : null],
+          checkboxes: this.checkboxesForm, optional: this.optionalForm});
+      } else {
+        questionControlArray.push({checkboxes: this.checkboxesForm, optional: this.optionalForm});
+      }
     });
-    console.log({questionControlArray});
     return questionControlArray;
   }
 
@@ -108,7 +111,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       }
      });
 
-    console.log({questionControlArray});
+    // console.log({questionControlArray});
     questionControlArray = questionControlArray.filter(elem => !!Object.keys(elem).map(k => elem[k])[0]);
     return questionControlArray;
   }
@@ -119,17 +122,14 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
       if (options) {
         const questions = [options.question, ...options.aliases];
         this.questions.push({options, questions});
-        // console.log('INFO',this.questions);
         this.dataService.changeQuestions(this.questions);
-        // console.log({options});
       }
     });
   }
 
 
   onReviewAnswers(form: any) {
-    // console.log(form.value);
-    // console.log(this.getAnswers(this.questions));
+    // console.log('answers', this.getAnswers(this.questions));
     const result = this.getAnswers(this.questions);
     this.dataService.changeAnswers(result);
 

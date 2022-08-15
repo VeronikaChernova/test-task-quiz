@@ -1,8 +1,9 @@
-<div *ngFor="let answer of this.answers; let i = index" class="container">
+<title>Answers</title>
+<div *ngFor="let answer of answers; let i = index" class="container">
   <div class="container">
-  <div>{{answer[0][0]}}</div>
-  <div *ngIf="isNotBoolean(answer[0][1])">{{answer[0][1]}}</div>
+  <div style="font-weight: 500;">{{answer[0][0]}}</div>
+  <div *ngIf="isNotBoolean(answer[0][1])" style="font-style: italic;">{{answer[0][1]}}</div>
   </div>
 </div>
-<button (click)="onBack()">Back to Form Builder</button>
+<button (click)="onBack()"  [ngClass]="{ 'btn-add': isAnswersNotExist}">Back to Form Builder</button>
 

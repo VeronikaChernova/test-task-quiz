@@ -6,3 +6,20 @@ div, input {
   padding: 5px;
   margin: 5px;
 }
+.btn-add {
+  width: 200px;
+  height: 50px;
+  background-color: lightgreen;
+  margin-top: 20%;
+  margin-left: 40%
+}
+.bottom-btns {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.btn-review {
+  width: 200px;
+  height: 50px;
+  background-color: aliceblue;
+}
